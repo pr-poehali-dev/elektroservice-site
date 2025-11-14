@@ -9,6 +9,7 @@ import Icon from '@/components/ui/icon';
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState('home');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: '',
@@ -20,6 +21,7 @@ const Index = () => {
 
   const scrollToSection = (sectionId: string) => {
     setActiveSection(sectionId);
+    setIsMobileMenuOpen(false);
     const element = document.getElementById(sectionId);
     element?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -158,13 +160,43 @@ const Index = () => {
               <button onClick={() => scrollToSection('contacts')} className="text-sm font-medium hover:text-primary transition-colors">Контакты</button>
             </div>
 
-            <a href="tel:89029342417" className="hidden md:block">
-              <Button className="bg-secondary hover:bg-secondary/90">
-                <Icon name="Phone" size={18} className="mr-2" />
-                8 (902) 934-24-17
-              </Button>
-            </a>
+            <div className="flex items-center gap-3">
+              <a href="tel:89029342417" className="hidden md:block">
+                <Button className="bg-secondary hover:bg-secondary/90">
+                  <Icon name="Phone" size={18} className="mr-2" />
+                  8 (902) 934-24-17
+                </Button>
+              </a>
+              
+              <button 
+                className="md:hidden p-2 hover:bg-primary/10 rounded-lg transition-colors"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                aria-label="Toggle menu"
+              >
+                <Icon name={isMobileMenuOpen ? "X" : "Menu"} size={28} className="text-primary" />
+              </button>
+            </div>
           </div>
+
+          {isMobileMenuOpen && (
+            <div className="md:hidden mt-4 pb-4 animate-fade-in">
+              <div className="flex flex-col space-y-3">
+                <button onClick={() => scrollToSection('home')} className="text-left py-2 px-4 hover:bg-primary/10 rounded-lg transition-colors font-medium">Главная</button>
+                <button onClick={() => scrollToSection('services')} className="text-left py-2 px-4 hover:bg-primary/10 rounded-lg transition-colors font-medium">Услуги</button>
+                <button onClick={() => scrollToSection('prices')} className="text-left py-2 px-4 hover:bg-primary/10 rounded-lg transition-colors font-medium">Цены</button>
+                <button onClick={() => scrollToSection('about')} className="text-left py-2 px-4 hover:bg-primary/10 rounded-lg transition-colors font-medium">О нас</button>
+                <button onClick={() => scrollToSection('reviews')} className="text-left py-2 px-4 hover:bg-primary/10 rounded-lg transition-colors font-medium">Отзывы</button>
+                <button onClick={() => scrollToSection('faq')} className="text-left py-2 px-4 hover:bg-primary/10 rounded-lg transition-colors font-medium">FAQ</button>
+                <button onClick={() => scrollToSection('contacts')} className="text-left py-2 px-4 hover:bg-primary/10 rounded-lg transition-colors font-medium">Контакты</button>
+                <a href="tel:89029342417" className="block">
+                  <Button className="w-full bg-secondary hover:bg-secondary/90">
+                    <Icon name="Phone" size={18} className="mr-2" />
+                    8 (902) 934-24-17
+                  </Button>
+                </a>
+              </div>
+            </div>
+          )}
         </nav>
       </header>
 
