@@ -2,15 +2,57 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/hooks/use-toast';
 import Icon from '@/components/ui/icon';
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState('home');
+  const { toast } = useToast();
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    service: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const scrollToSection = (sectionId: string) => {
     setActiveSection(sectionId);
     const element = document.getElementById(sectionId);
     element?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      toast({
+        title: "Заявка отправлена!",
+        description: "Мы свяжемся с вами в ближайшее время.",
+      });
+      
+      setFormData({ name: '', phone: '', service: '', message: '' });
+    } catch (error) {
+      toast({
+        title: "Ошибка",
+        description: "Не удалось отправить заявку. Попробуйте позже.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const services = [
@@ -319,53 +361,135 @@ const Index = () => {
       </section>
 
       <section id="contacts" className="py-20 px-4 bg-gradient-to-br from-primary to-primary/80 text-white">
-        <div className="container mx-auto max-w-4xl text-center">
-          <h2 className="text-4xl font-bold font-heading mb-4">Свяжитесь с нами</h2>
-          <p className="text-xl mb-8 opacity-90">Мы всегда готовы помочь вам с электрикой</p>
-          
-          <div className="grid md:grid-cols-3 gap-6 mb-12">
-            <Card className="bg-white/10 backdrop-blur border-white/20">
-              <CardContent className="p-6 text-center">
-                <Icon name="Phone" className="mx-auto mb-3" size={32} />
-                <h3 className="font-bold mb-2">Телефон</h3>
-                <a href="tel:89029342417" className="hover:underline">8 (902) 934-24-17</a>
-              </CardContent>
-            </Card>
-            
-            <Card className="bg-white/10 backdrop-blur border-white/20">
-              <CardContent className="p-6 text-center">
-                <Icon name="MessageCircle" className="mx-auto mb-3" size={32} />
-                <h3 className="font-bold mb-2">WhatsApp</h3>
-                <a href="https://wa.me/79029342417" target="_blank" rel="noopener noreferrer" className="hover:underline">
-                  Написать в WhatsApp
-                </a>
-              </CardContent>
-            </Card>
-            
-            <Card className="bg-white/10 backdrop-blur border-white/20">
-              <CardContent className="p-6 text-center">
-                <Icon name="Mail" className="mx-auto mb-3" size={32} />
-                <h3 className="font-bold mb-2">Email</h3>
-                <a href="mailto:dima.sobolev102210@mail.ru" className="hover:underline text-sm">
-                  dima.sobolev102210@mail.ru
-                </a>
-              </CardContent>
-            </Card>
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold font-heading mb-4">Свяжитесь с нами</h2>
+            <p className="text-xl opacity-90">Мы всегда готовы помочь вам с электрикой</p>
           </div>
+          
+          <div className="grid lg:grid-cols-2 gap-12 items-start">
+            <div>
+              <Card className="bg-white/10 backdrop-blur border-white/20">
+                <CardContent className="p-8">
+                  <h3 className="text-2xl font-bold font-heading mb-6">Оставьте заявку</h3>
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    <div>
+                      <Input
+                        type="text"
+                        name="name"
+                        placeholder="Ваше имя"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        required
+                        className="bg-white/20 border-white/30 text-white placeholder:text-white/60"
+                      />
+                    </div>
+                    <div>
+                      <Input
+                        type="tel"
+                        name="phone"
+                        placeholder="Телефон"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        required
+                        className="bg-white/20 border-white/30 text-white placeholder:text-white/60"
+                      />
+                    </div>
+                    <div>
+                      <Input
+                        type="text"
+                        name="service"
+                        placeholder="Интересующая услуга"
+                        value={formData.service}
+                        onChange={handleInputChange}
+                        className="bg-white/20 border-white/30 text-white placeholder:text-white/60"
+                      />
+                    </div>
+                    <div>
+                      <Textarea
+                        name="message"
+                        placeholder="Опишите вашу задачу"
+                        value={formData.message}
+                        onChange={handleInputChange}
+                        rows={4}
+                        className="bg-white/20 border-white/30 text-white placeholder:text-white/60"
+                      />
+                    </div>
+                    <Button 
+                      type="submit" 
+                      size="lg" 
+                      className="w-full bg-secondary hover:bg-secondary/90"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? 'Отправка...' : 'Отправить заявку'}
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
+            </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="tel:89029342417">
-              <Button size="lg" className="bg-white text-primary hover:bg-white/90">
-                <Icon name="Phone" size={20} className="mr-2" />
-                Позвонить сейчас
-              </Button>
-            </a>
-            <a href="https://wa.me/79029342417" target="_blank" rel="noopener noreferrer">
-              <Button size="lg" className="bg-secondary hover:bg-secondary/90">
-                <Icon name="MessageCircle" size={20} className="mr-2" />
-                Написать в WhatsApp
-              </Button>
-            </a>
+            <div className="space-y-6">
+              <div className="text-center lg:text-left">
+                <h3 className="text-2xl font-bold font-heading mb-6">Контактная информация</h3>
+              </div>
+              
+              <div className="grid gap-6">
+                <Card className="bg-white/10 backdrop-blur border-white/20">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-4">
+                      <Icon name="Phone" size={32} />
+                      <div className="text-left">
+                        <h4 className="font-bold mb-1">Телефон</h4>
+                        <a href="tel:89029342417" className="hover:underline">8 (902) 934-24-17</a>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="bg-white/10 backdrop-blur border-white/20">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-4">
+                      <Icon name="MessageCircle" size={32} />
+                      <div className="text-left">
+                        <h4 className="font-bold mb-1">WhatsApp</h4>
+                        <a href="https://wa.me/79029342417" target="_blank" rel="noopener noreferrer" className="hover:underline">
+                          Написать в WhatsApp
+                        </a>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <Card className="bg-white/10 backdrop-blur border-white/20">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-4">
+                      <Icon name="Mail" size={32} />
+                      <div className="text-left">
+                        <h4 className="font-bold mb-1">Email</h4>
+                        <a href="mailto:dima.sobolev102210@mail.ru" className="hover:underline text-sm">
+                          dima.sobolev102210@mail.ru
+                        </a>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="flex flex-col gap-4 mt-8">
+                <a href="tel:89029342417">
+                  <Button size="lg" className="w-full bg-white text-primary hover:bg-white/90">
+                    <Icon name="Phone" size={20} className="mr-2" />
+                    Позвонить сейчас
+                  </Button>
+                </a>
+                <a href="https://wa.me/79029342417" target="_blank" rel="noopener noreferrer">
+                  <Button size="lg" className="w-full bg-secondary hover:bg-secondary/90">
+                    <Icon name="MessageCircle" size={20} className="mr-2" />
+                    Написать в WhatsApp
+                  </Button>
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -374,10 +498,10 @@ const Index = () => {
         <div className="container mx-auto text-center">
           <div className="flex items-center justify-center space-x-2 mb-4">
             <Icon name="Zap" size={24} />
-            <span className="text-xl font-bold font-heading">ЭлектроПро</span>
+            <span className="text-xl font-bold font-heading">RPO-Vollit</span>
           </div>
           <p className="text-sm opacity-80">
-            © {new Date().getFullYear()} ЭлектроПро. Все права защищены.
+            © {new Date().getFullYear()} RPO-Vollit. Все права защищены.
           </p>
         </div>
       </footer>
