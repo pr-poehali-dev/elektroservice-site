@@ -134,7 +134,7 @@ const Index = () => {
                 Профессиональные <span className="text-primary">электромонтажные</span> работы
               </h1>
               <p className="text-xl text-muted-foreground mb-8">
-                Качественные услуги электрика в Москве и области. Опыт работы более 10 лет. Гарантия на все виды работ.
+                Качественные услуги электрика в Калуге и области. Опыт работы более 10 лет. Гарантия на все виды работ.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button size="lg" className="bg-primary hover:bg-primary/90 text-lg" onClick={() => scrollToSection('contacts')}>
@@ -236,7 +236,7 @@ const Index = () => {
             <div>
               <h2 className="text-4xl font-bold font-heading mb-6">О нас</h2>
               <p className="text-lg text-muted-foreground mb-6">
-                Мы — команда профессиональных электриков с более чем 10-летним опытом работы. Специализируемся на выполнении электромонтажных работ любой сложности в Москве и Московской области.
+                Мы — команда профессиональных электриков с более чем 10-летним опытом работы. Специализируемся на выполнении электромонтажных работ любой сложности в Калуге и Калужской области.
               </p>
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
